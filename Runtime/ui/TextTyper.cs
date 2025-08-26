@@ -1,9 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -203,7 +201,7 @@ namespace jb5n {
 						formattedFadingCharacters += typingCharacters[i].character;
 					}
 					else {
-						formattedFadingCharacters += "<color=#" + baseColor.ToHexString() + ">" + typingCharacters[i].character + colorClosingTag;
+						formattedFadingCharacters += "<color=#" + ColorUtility.ToHtmlStringRGBA(baseColor) + ">" + typingCharacters[i].character + colorClosingTag;
 					}
 				}
 			}

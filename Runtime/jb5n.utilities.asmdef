@@ -1,0 +1,7 @@
+{
+	"name": "jb5n.utilities",
+	"references": [
+		"Unity.InputSystem",
+		"Unity.TextMeshPro"
+	]
+}

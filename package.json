@@ -1,0 +1,13 @@
+{
+  "name": "com.jb5n.jb5n-utilities",
+  "version": "1.0.0",
+  "displayName": "jb5n-utilities",
+  "author": {
+    "name": "Justin Bostian",
+    "url": "https://github.com/jb5n/jb5n-unity-utilities"
+  },
+  "dependencies": {
+    "com.unity.inputsystem": "1.4.4",
+    "com.unity.textmeshpro": "3.0.6"
+  }
+}

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace jb5n {
-	public class CameraControl : Singleton<CameraControl> {
+	public abstract class CameraControl : Singleton<CameraControl> {
 
 		public delegate void OnZoom(float newOrthoSize);
 		public OnZoom onZoom;
@@ -29,16 +29,13 @@ namespace jb5n {
 		private bool autoFocusing = false;
 		private Vector3 autoFocusTarget;
 
-		// Input actions
-		private CameraInputActions inputActions;
-
 		private void OnEnable() {
-			inputActions = new CameraInputActions();
-			inputActions.Camera.Enable();
+			//inputActions = new CameraInputActions();
+			//inputActions.Camera.Enable();
 		}
 
 		private void OnDisable() {
-			inputActions.Camera.Disable();
+			//inputActions.Camera.Disable();
 		}
 
 		protected override void Awake() {
@@ -59,10 +56,10 @@ namespace jb5n {
 		private void HandlePan() {
 			Vector3 curMousePos = Mouse.current.position.ReadValue();
 
-			if (inputActions.Camera.Pan.WasPerformedThisFrame()) {
+			if (WasPanPerformedThisFrame()) {
 				panMousePos = _mainCam.ScreenToWorldPoint(curMousePos);
 			}
-			else if (inputActions.Camera.Pan.IsPressed()) {
+			else if (IsPanPressed()) {
 				Vector3 panDelta = panMousePos - (Vector2)_mainCam.ScreenToWorldPoint(curMousePos);
 				_mainCam.transform.position += panDelta;
 				panMousePos = _mainCam.ScreenToWorldPoint(curMousePos);
@@ -75,7 +72,7 @@ namespace jb5n {
 		}
 
 		private void HandleZoom() {
-			float scrollDelta = inputActions.Camera.Zoom.ReadValue<Vector2>().y;
+			float scrollDelta = GetCameraZoom();
 			if (scrollDelta != 0f) {
 				autoFocusing = false;
 			}
@@ -114,5 +111,11 @@ namespace jb5n {
 			float unboundedZoom = Mathf.Max(targetHeightHalf, targetWidthHalf / _mainCam.aspect) + autofocusBoundsExtension;
 			targetZoom = Mathf.Clamp(unboundedZoom, minZoom, maxZoom);
 		}
+
+		// Abstract input functions
+		public abstract bool WasPanPerformedThisFrame(); // Typically resolve using inputActions.<input>.WasPerformedThisFrame()
+		public abstract bool IsPanPressed(); // Typically resolve using inputActions.<input>.IsPressed()
+		public abstract float GetCameraZoom(); // inputActions.<scroll wheel>.ReadValue<Vector2>().y
+
 	}
 }
