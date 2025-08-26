@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Mirror;
+﻿using UnityEngine;
 
 namespace jb5n {
 	// Helper function so we can stay in the gameplay scene and automatically load the Main Menu scene when playing in the editor
