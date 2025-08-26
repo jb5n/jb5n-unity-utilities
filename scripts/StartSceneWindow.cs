@@ -5,15 +5,18 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-public class StartSceneWindow : EditorWindow {
-	private void OnGUI() {
-		EditorSceneManager.playModeStartScene = (SceneAsset)EditorGUILayout.ObjectField(new GUIContent("Start Scene"),
-			EditorSceneManager.playModeStartScene, typeof(SceneAsset), false);
-	}
+namespace jb5n {
+	public class StartSceneWindow : EditorWindow {
+		private void OnGUI() {
+			EditorSceneManager.playModeStartScene = (SceneAsset)EditorGUILayout.ObjectField(new GUIContent("Start Scene"),
+				EditorSceneManager.playModeStartScene, typeof(SceneAsset), false);
+		}
 
-	[MenuItem("Window/Start Scene Settings")]
-	private static void StartScene() {
-		GetWindow<StartSceneWindow>();
+		[MenuItem("Window/Start Scene Settings")]
+		private static void StartScene() {
+			GetWindow<StartSceneWindow>();
+		}
 	}
 }
+
 #endif // UNITY_EDITOR
