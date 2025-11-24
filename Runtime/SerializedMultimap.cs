@@ -46,6 +46,13 @@ public class SerializedMultimap<TKey, TValue> : IEnumerable {
 		return dict[key];
 	}
 
+	public bool TryGetValue(TKey key, out TValue value) {
+		if (!isInitialized) {
+			Initialize();
+		}
+		return dict.TryGetValue(key, out value);
+	}
+
 	public Dictionary<TKey, TValue> GetDictionary() {
 		if (!isInitialized) {
 			Initialize();
