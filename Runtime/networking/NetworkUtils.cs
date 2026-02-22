@@ -34,7 +34,7 @@ namespace jb5n {
 		}
 
 		// General-purpose utility that can either look up the object's NetworkIdentity or construct one from a NetHierarchySyncChild
-		public static uint GetGameObjectNetId(GameObject obj) {
+		public static uint GetGameObjectNetId(GameObject obj, bool suppressError = false) {
 			if (obj.TryGetComponent<NetworkIdentity>(out var identity)) {
 				return identity.netId;
 			}
@@ -43,7 +43,9 @@ namespace jb5n {
 				return syncChild.GetNetId();
 			}
 
-			Debug.LogError("Failed to get netId for object " + obj.name);
+			if (!suppressError) {
+				Debug.LogError("Failed to get netId for object " + obj.name);
+			}
 			return uint.MaxValue;
 		}
 	}
