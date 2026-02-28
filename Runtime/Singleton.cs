@@ -22,11 +22,10 @@ namespace jb5n {
 			if (m_instance == null && this is T) {
 				m_instance = this as T;
 			}
-			else {
-				Debug.Log("Deleting duplicate instance of " + GetType().ToString() + ", " + gameObject.name + ": class is marked as singleton.");
+			else if (m_instance != this) {
+				Debug.Log($"Deleting duplicate instance of {GetType().ToString()}, {gameObject.name}: class is marked as singleton. Singleton instance: {m_instance.gameObject.name}");
 				Destroy(gameObject);
 			}
 		}
 	}
 }
-

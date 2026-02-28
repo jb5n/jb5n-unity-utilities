@@ -23,6 +23,12 @@ namespace jb5n {
 			return (Mathf.Ceil(value / interval)) * interval;
 		}
 
+		public static float ClampAngle(float angle, float min, float max) {
+			float start = (min + max) * 0.5f - 180f;
+			float floor = Mathf.FloorToInt((angle - start) / 360) * 360;
+			return Mathf.Clamp(angle, min + floor, max + floor);
+		}
+
 		/*
 		// -------------------------------------------------------------------
 		// NOISE
