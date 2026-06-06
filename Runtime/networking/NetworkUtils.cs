@@ -10,6 +10,9 @@ namespace jb5n {
 		public static uint maxChildCount = 100;
 
 		public static GameObject FindGameObjectByNetId(uint netId) {
+			if (netId == uint.MaxValue) {
+				return null;
+			}
 			if (netId >= maxNormalNetId) {
 				// This is a child object under a parent with a NetworkIdentity
 				// Decode the netId using arithmetic encoding
