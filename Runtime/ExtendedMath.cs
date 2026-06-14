@@ -54,6 +54,22 @@ namespace jb5n {
 		// -------------------------------------------------------------------
 		*/
 
+		// If we shoot an infinite line from lineOrigin in the direction of lineDirection, this function returns the closest point on that line to the given point.
+		public static Vector3 ClosestPointOnLine(Vector3 lineOrigin, Vector3 lineDirection, Vector3 point) {
+			Vector3 dir = lineDirection.normalized;
+			return lineOrigin + dir * Vector3.Dot(point - lineOrigin, dir);
+		}
+
+		public static float DistanceToClosestPointOnLine(Vector3 lineOrigin, Vector3 lineDirection, Vector3 point) {
+			Vector3 closestPoint = ClosestPointOnLine(lineOrigin, lineDirection, point);
+			return Vector3.Distance(point, closestPoint);
+		}
+
+		public static float DistanceToClosestPointOnLineSqr(Vector3 lineOrigin, Vector3 lineDirection, Vector3 point) {
+			Vector3 closestPoint = ClosestPointOnLine(lineOrigin, lineDirection, point);
+			return (point - closestPoint).sqrMagnitude;
+		}
+
 		public static bool DoLinesIntersect(Vector2 aStart, Vector2 aEnd, Vector2 bStart, Vector2 bEnd) {
 			return IsCounterclockwise(aStart, bStart, bEnd) != IsCounterclockwise(aEnd, bStart, bEnd) &&
 				IsCounterclockwise(aStart, aEnd, bStart) != IsCounterclockwise(aStart, aEnd, bEnd);

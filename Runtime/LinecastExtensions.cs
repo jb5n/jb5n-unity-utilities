@@ -14,6 +14,11 @@ namespace jb5n {
 			return Physics2D.BoxCastAll(origin, size, 0f, heading, heading.magnitude, mask);
 		}
 
+		public static RaycastHit[] LinecastAll(Vector3 origin, Vector3 destination, LayerMask mask, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal) {
+			Vector3 heading = destination - origin;
+			return Physics.RaycastAll(origin, heading, heading.magnitude, mask, queryTriggerInteraction);
+		}
+
 		// Returns true if we hit a gameobject with our box linecast that isn't on our ignore list
 		public static bool SelectiveBoxLinecast(Vector2 origin, Vector2 destination, Vector2 size, LayerMask mask,
 			List<GameObject> toIgnore, bool searchRoot) {
