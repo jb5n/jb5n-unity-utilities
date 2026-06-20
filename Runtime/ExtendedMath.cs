@@ -599,5 +599,12 @@ namespace jb5n {
 			Vector3 toPoint = splineEvalPos - (Vector3)nearestPointFloat;
 			return Vector3.Dot(toPoint, right);
 		}
+
+		public static float GetLeftRightOffsetFromSpline(Vector3 normalizedSplineTangent, float3 nearestPointOnSpline, SplineContainer currentFollowSpline, Vector3 evalPoint) {
+			Vector3 splineEvalPos = currentFollowSpline.transform.InverseTransformPoint(evalPoint);
+			Vector3 right = Vector3.Cross(Vector3.up, normalizedSplineTangent).normalized;
+			Vector3 toPoint = splineEvalPos - (Vector3)nearestPointOnSpline;
+			return Vector3.Dot(toPoint, right);
+		}
 	}
 }
