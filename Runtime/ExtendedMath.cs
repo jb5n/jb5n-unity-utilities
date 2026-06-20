@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Splines;
 
 namespace jb5n {
 
@@ -577,6 +579,25 @@ namespace jb5n {
 		public static float HashRandom(float input, float seed) {
 			System.Random r = new System.Random((input + seed).GetHashCode());
 			return (float)r.NextDouble();
+		}
+
+		/*
+		// -------------------------------------------------------------------
+		// SPLINE
+		// -------------------------------------------------------------------
+		*/
+
+		// Returns distance to the nearest point on the spline, with a negative value indicating we are to the left of the spline,
+		// and a positive value indicating we are to the right of the spline.
+		public static float GetLeftRightOffsetFromSpline(SplineContainer currentFollowSpline, Vector3 evalPoint) {
+			Vector3 splineEvalPos = currentFollowSpline.transform.InverseTransformPoint(evalPoint);
+			SplineUtility.GetNearestPoint(currentFollowSpline.Spline, splineEvalPos, out float3 nearestPointFloat, out float t);
+			Vector3 tangent = SplineUtility.EvaluateTangent(currentFollowSpline.Spline, t);
+			tangent.y = 0f;
+			tangent.Normalize();
+			Vector3 right = Vector3.Cross(Vector3.up, tangent).normalized;
+			Vector3 toPoint = splineEvalPos - (Vector3)nearestPointFloat;
+			return Vector3.Dot(toPoint, right);
 		}
 	}
 }
