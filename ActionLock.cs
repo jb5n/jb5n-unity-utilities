@@ -18,15 +18,17 @@ public class ActionLock {
 		return newLock;
 	}
 
-	public void ReleaseLock(Guid lockId) {
+	// Returns true if no locks remain
+	public bool ReleaseLock(Guid lockId) {
 		if (locks.Count == 0) {
-			return;
+			return true;
 		}
 		locks.Remove(lockId);
 		OnLockRemoved?.Invoke();
 		if (locks.Count == 0) {
 			OnUnlock?.Invoke();
 		}
+		return locks.Count == 0;
 	}
 
 	public bool IsLocked() {
