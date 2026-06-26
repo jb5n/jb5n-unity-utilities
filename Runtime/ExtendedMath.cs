@@ -583,6 +583,41 @@ namespace jb5n {
 
 		/*
 		// -------------------------------------------------------------------
+		// COORDINATE SPACES
+		// -------------------------------------------------------------------
+		*/
+
+		// Converts a worldspace position into a space relative to the given forward tangent and origin position.
+		// The returned vector's z is the distance along the tangent (forward/backward), x is the lateral offset
+		// (positive to the right of the tangent, negative to the left), and y is the vertical offset.
+		// Assumes the tangent lies in the horizontal (XZ) plane, which lets us skip the cross products and an
+		// extra normalize: for a horizontal forward the right axis is simply (forward.z, 0, -forward.x).
+		public static Vector3 WorldToTangentSpace(Vector3 forwardTangent, Vector3 origin, Vector3 worldPosition) {
+			forwardTangent.y = 0f;
+			Vector3 forward = forwardTangent.normalized;
+			Vector3 toPoint = worldPosition - origin;
+			return new Vector3(
+				toPoint.x * forward.z - toPoint.z * forward.x, // dot with right = (forward.z, 0, -forward.x)
+				toPoint.y,
+				toPoint.x * forward.x + toPoint.z * forward.z  // dot with forward
+			);
+		}
+
+		// Inverse of WorldToTangentSpace: converts a vector expressed in the tangent-relative space (x = lateral,
+		// y = vertical, z = distance along the tangent) back into worldspace, given the same forward tangent and origin.
+		public static Vector3 TangentToWorldSpace(Vector3 forwardTangent, Vector3 origin, Vector3 localPosition) {
+			forwardTangent.y = 0f;
+			Vector3 forward = forwardTangent.normalized;
+			// right = (forward.z, 0, -forward.x), forward = (forward.x, 0, forward.z), up = (0, 1, 0)
+			return new Vector3(
+				origin.x + localPosition.x * forward.z + localPosition.z * forward.x,
+				origin.y + localPosition.y,
+				origin.z - localPosition.x * forward.x + localPosition.z * forward.z
+			);
+		}
+
+		/*
+		// -------------------------------------------------------------------
 		// SPLINE
 		// -------------------------------------------------------------------
 		*/
