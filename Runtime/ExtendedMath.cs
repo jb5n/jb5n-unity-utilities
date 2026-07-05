@@ -592,6 +592,7 @@ namespace jb5n {
 		// (positive to the right of the tangent, negative to the left), and y is the vertical offset.
 		// Assumes the tangent lies in the horizontal (XZ) plane, which lets us skip the cross products and an
 		// extra normalize: for a horizontal forward the right axis is simply (forward.z, 0, -forward.x).
+		// Origin should be in world space.
 		public static Vector3 WorldToTangentSpace(Vector3 forwardTangent, Vector3 origin, Vector3 worldPosition) {
 			forwardTangent.y = 0f;
 			Vector3 forward = forwardTangent.normalized;
@@ -601,6 +602,14 @@ namespace jb5n {
 				toPoint.y,
 				toPoint.x * forward.x + toPoint.z * forward.z  // dot with forward
 			);
+		}
+
+		public static Vector3 WorldToTangentSpace(SplineContainer spline, Vector3 worldPosition) {
+			Vector3 splineEvalPos = spline.transform.InverseTransformPoint(worldPosition);
+			SplineUtility.GetNearestPoint(spline.Spline, splineEvalPos, out float3 nearestPointLocal, out float t);
+			Vector3 nearestPointOnSpline = spline.transform.TransformPoint(nearestPointLocal);
+			Vector3 tangent = spline.transform.TransformDirection(SplineUtility.EvaluateTangent(spline.Spline, t));
+			return WorldToTangentSpace(tangent, nearestPointOnSpline, worldPosition);
 		}
 
 		// Inverse of WorldToTangentSpace: converts a vector expressed in the tangent-relative space (x = lateral,
