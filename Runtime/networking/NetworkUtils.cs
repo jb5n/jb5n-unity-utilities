@@ -22,7 +22,8 @@ namespace jb5n {
 
 				if (NetworkClient.spawned.TryGetValue(parentNetId, out NetworkIdentity parentIdentity)) {
 					if (parentIdentity.TryGetComponent<NetHierarchySyncParent>(out var syncParent)) {
-						return syncParent.GetChildAtIndex(childIndex).gameObject;
+						NetHierarchySyncChild child = syncParent.GetChildAtIndex(childIndex);
+						return child != null ? child.gameObject : null;
 					}
 				}
 				return null;
