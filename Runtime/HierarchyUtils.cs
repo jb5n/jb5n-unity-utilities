@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public static class HierarchyUtils {
@@ -32,6 +33,16 @@ public static class HierarchyUtils {
 		// Iterate through all child transforms and call the function recursively
 		foreach (Transform child in obj.transform) {
 			SetLayerRecursively(child.gameObject, layerName);
+		}
+	}
+
+	public static void GetGameObjectLayersRecursively(this GameObject obj, ref Dictionary<GameObject, int> originalLayers) {
+		// Store the layer for the current object
+		originalLayers[obj] = obj.layer;
+
+		// Iterate through all child transforms and call the function recursively
+		foreach (Transform child in obj.transform) {
+			GetGameObjectLayersRecursively(child.gameObject, ref originalLayers);
 		}
 	}
 }
