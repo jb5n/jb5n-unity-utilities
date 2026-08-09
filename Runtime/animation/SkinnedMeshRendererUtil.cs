@@ -43,6 +43,43 @@ public class SkinnedMeshRendererUtil : MonoBehaviour {
 		UpdateBounds();
 	}
 
+	[Button("Copy Bone Positions and Rotations")]
+	[ContextMenu("Copy Bone Positions and Rotations")]
+	public void CopyBonePositionAndRotations() {
+		SkinnedMeshRenderer sourceSMR = sourceBoneMap;
+		if (sourceSMR == null) {
+			if (copyBonesFromSibling && !string.IsNullOrEmpty(siblingName)) {
+				var sibling = transform.parent?.Find(siblingName);
+				if (sibling != null && sibling.TryGetComponent<SkinnedMeshRenderer>(out var siblingRenderer)) {
+					sourceSMR = siblingRenderer;
+				}
+			}
+			if (sourceSMR == null) {
+				Debug.LogWarning("Source bone map is not assigned.");
+				return;
+			}
+		}
+
+		var targetRenderer = GetComponent<SkinnedMeshRenderer>();
+		if (targetRenderer == null) {
+			Debug.LogWarning("No SkinnedMeshRenderer found on this GameObject.");
+			return;
+		}
+
+		if (targetRenderer.bones.Length != sourceSMR.bones.Length) {
+			Debug.LogWarning("Bone count mismatch between source and target SkinnedMeshRenderer.");
+			return;
+		}
+
+		targetRenderer.rootBone.SetPositionAndRotation(sourceSMR.rootBone.position, sourceSMR.rootBone.rotation);
+		for (int i = 0; i < targetRenderer.bones.Length; i++) {
+			if (targetRenderer.bones[i] != null && sourceSMR.bones[i] != null) {
+				targetRenderer.bones[i].SetPositionAndRotation(sourceSMR.bones[i].position, sourceSMR.bones[i].rotation);
+			}
+		}
+		UpdateBounds();
+	}
+
 	[Button("Update Bounds")]
 	[ContextMenu("Update Bounds")]
 	public void UpdateBounds() {
