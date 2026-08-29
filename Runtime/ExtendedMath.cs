@@ -81,6 +81,13 @@ namespace jb5n {
 			return (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x);
 		}
 
+		public static Vector3 ClosestPointOnLineSegment(Vector3 a, Vector3 b, Vector3 point) {
+			Vector3 ab = b - a;
+			float t = Vector3.Dot(point - a, ab) / Vector3.Dot(ab, ab);
+			t = Mathf.Clamp01(t);
+			return a + t * ab;
+		}
+
 		/*
 		// -------------------------------------------------------------------
 		// LERPING
