@@ -1,48 +1,22 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using VInspector;
 
-// A list of values, each with an associated weight, that supports weighted random selection.
+// A set of values, each with an associated weight, that supports weighted random selection.
 // Entries with higher weights are proportionally more likely to be picked by GetRandom().
+// Backed by a SerializedDictionary so the inspector shows a single value/weight table;
+// each value can therefore appear at most once.
 [System.Serializable]
-public class WeightedList<T> : IEnumerable<T> {
-	[System.Serializable]
-	public struct Entry {
-		public T value;
-		[Min(0f)] public float weight;
-
-		public Entry(T value, float weight) {
-			this.value = value;
-			this.weight = weight;
-		}
-	}
-
-	public List<Entry> entries = new();
-
-	public int Count => entries.Count;
-
-	public void Add(T value, float weight = 1f) {
-		entries.Add(new Entry(value, weight));
-	}
-
-	public bool Remove(T value) {
-		int index = entries.FindIndex(e => EqualityComparer<T>.Default.Equals(e.value, value));
-		if (index < 0) {
-			return false;
-		}
-		entries.RemoveAt(index);
-		return true;
-	}
-
-	public void Clear() {
-		entries.Clear();
+public class WeightedList<T> : SerializedDictionary<T, float> {
+	public void Add(T value) {
+		Add(value, 1f);
 	}
 
 	// Sum of all (non-negative) weights in the list.
 	public float GetTotalWeight() {
 		float total = 0f;
-		foreach (Entry entry in entries) {
-			total += Mathf.Max(0f, entry.weight);
+		foreach (float weight in Values) {
+			total += Mathf.Max(0f, weight);
 		}
 		return total;
 	}
@@ -58,7 +32,7 @@ public class WeightedList<T> : IEnumerable<T> {
 	}
 
 	public bool TryGetRandom(out T value) {
-		if (entries.Count == 0) {
+		if (Count == 0) {
 			value = default;
 			return false;
 		}
@@ -66,30 +40,29 @@ public class WeightedList<T> : IEnumerable<T> {
 		float total = GetTotalWeight();
 		if (total <= 0f) {
 			// All weights are zero (or negative); fall back to a uniform pick.
-			value = entries[Random.Range(0, entries.Count)].value;
-			return true;
+			int target = Random.Range(0, Count);
+			foreach (T key in Keys) {
+				if (target-- == 0) {
+					value = key;
+					return true;
+				}
+			}
 		}
 
 		float roll = Random.Range(0f, total);
-		foreach (Entry entry in entries) {
-			float weight = Mathf.Max(0f, entry.weight);
+		T last = default;
+		foreach (KeyValuePair<T, float> entry in this) {
+			float weight = Mathf.Max(0f, entry.Value);
 			if (roll < weight) {
-				value = entry.value;
+				value = entry.Key;
 				return true;
 			}
 			roll -= weight;
+			last = entry.Key;
 		}
 
 		// Floating point drift; return the last entry.
-		value = entries[^1].value;
+		value = last;
 		return true;
 	}
-
-	public IEnumerator<T> GetEnumerator() {
-		foreach (Entry entry in entries) {
-			yield return entry.value;
-		}
-	}
-
-	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
