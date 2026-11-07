@@ -6,6 +6,7 @@ using UnityEngine;
 [AddComponentMenu("")]
 [FeedbackHelp("This feedback works like Flicker but is applied to all children of RendererParent")]
 [FeedbackPath("Renderer/Flicker Group")]
+[System.Serializable]
 public class MMF_FlickerGroup : MMF_Flicker {
 	[Tooltip("All MeshRenderers that are children of this transform will be flickered")]
 	public Transform RendererParent;
